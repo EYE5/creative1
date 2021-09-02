@@ -1,5 +1,7 @@
 import styled from "styled-components";
 
+import { useAppSelector } from '../../app/hooks';
+import { selectCards } from './fieldSlice';
 import { CardData} from '../../models/card';
 import Row from './row';
 
@@ -19,26 +21,24 @@ function splitToRows(cards: CardData[]){
     return rows;
 }
 
-const Field = styled.div`
+const FieldStyled = styled.div`
     display: flex;
     flex-direction: column;
+    align-items: center;
     max-width: 1400px;
     max-height: 600px;
 
 `
 
-interface Props{
-    cards: CardData[];
-}
-
-const render = (props: Props)=>{
-   const rows = splitToRows(props.cards).map((row)=><Row cards={row}></Row>);
+const Field = ()=>{
+    const cards = useAppSelector(selectCards);    
+    const rows = splitToRows(cards).map((row, idx)=><Row cards={row} key={idx}></Row>);
 
     return (
-        <Field>
+        <FieldStyled>
             {rows}
-        </Field>
+        </FieldStyled>
     )
 }
 
-export default render;
+export default Field;

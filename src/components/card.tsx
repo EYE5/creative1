@@ -3,18 +3,28 @@ import styled from 'styled-components';
 import { CardData } from '../models/card';
 
 const Card = styled.div`
-    max-width: 50px;
-    max-height: 100px;
+    min-width: 50px;
+    min-height: 60px;
+    width: 80px;
+    height: 100px;
+    max-width: 150px;
+    max-height: 180px;
+    background-image: url(${(props: CardData)=> props.image});
+    background-size:100% 100%;
+
+    
+
+   
 `
 
-interface Props{
-    card: CardData;
-}
+type Props = CardData;
 
-const render = (props: Props) => {
+const render = ({image, isOpened}: Props) => {
     
     return (
-        <Card />
+        <Card image={image} isOpened={isOpened}/>
+          
+       
     )
 }
 

@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
-import { useAppSelector } from '../../app/hooks';
-import { selectCards } from './fieldSlice';
+import { useAppSelector, useAppDispatch } from '../../app/hooks';
+import { selectCards, selectScore, play } from './fieldSlice';
 import { CardData} from '../../models/card';
 import Row from './row';
 
@@ -30,13 +30,21 @@ const FieldStyled = styled.div`
 
 `
 
+const ButtonStyled = styled.button`
+
+`
+
 const Field = ()=>{
-    const cards = useAppSelector(selectCards);    
+    const cards = useAppSelector(selectCards);
+    const score = useAppSelector(selectScore)
+    const dispatch = useAppDispatch()
     const rows = splitToRows(cards).map((row, idx)=><Row cards={row} key={idx}></Row>);
 
     return (
         <FieldStyled>
             {rows}
+            <span>Score - {score} </span>
+            <ButtonStyled onClick={()=>dispatch(play())}>Играть</ButtonStyled>
         </FieldStyled>
     )
 }

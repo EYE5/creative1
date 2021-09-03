@@ -16,18 +16,22 @@ const CardStyled = styled.div`
     border: 1px solid black;
     border-radius: 5px;
     margin: 2px;
-    transition: 1s;
+    transition: .5s;
 `
 
-type Props = CardData;
+type Props = Omit<CardData, 'double'>;
 
 const Card = ({image, isOpened, id}: Props) => {  
     const dispatch = useAppDispatch();
 
     const toggleCard = (id: number)=>{
-        dispatch(openCard(id));
-
-        setTimeout(()=>dispatch(closeCard(id)), 4000)
+        try{
+            dispatch(openCard(id));
+        } catch(error){
+            return;
+        }
+        
+        setTimeout(()=>dispatch(closeCard(id)), 1000)
     }
 
     return (

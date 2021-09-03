@@ -1,6 +1,6 @@
-export interface CardData{
-    id: number;
-    image: string;
-    isOpened: boolean;
-    double: boolean;
+export interface CardData {
+  id: number;
+  image: string;
+  isOpened: boolean;
+  double: boolean;
 }

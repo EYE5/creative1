@@ -2,7 +2,8 @@ import styled from 'styled-components';
 
 import { CardData } from '../models/card';
 import { useAppDispatch } from '../app/hooks';
-import {openCard, closeCard} from '../components/field/fieldSlice';
+import { openCard, closeCard } from '../components/field/fieldSlice';
+import { CARD_TIMEOUT } from '../constants';
 
 const CardStyled = styled.div`
     min-width: 50px;
@@ -31,7 +32,7 @@ const Card = ({image, isOpened, id}: Props) => {
             return;
         }
         
-        setTimeout(()=>dispatch(closeCard(id)), 1000)
+        setTimeout(()=>dispatch(closeCard(id)), CARD_TIMEOUT)
     }
 
     return (

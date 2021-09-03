@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 
-import { CardData} from '../../models/card';
-import Card from '../card';
+import { CardData} from '../models/card';
+import Card from './card';
 
 const Row = styled.div`
     display: flex;

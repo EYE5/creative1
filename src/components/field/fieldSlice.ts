@@ -5,9 +5,7 @@ import { CardData } from '../../models/card';
 import { GameInfo, GameStatus } from '../../models/game-info';
 import { cards } from '../../data';
 import { shuffle } from '../../utils/array-shuffle';
-import { Timer } from 'easytimer.js';
 
-export const timer = new Timer();
 export interface CounterState {
   cards: CardData[];
   cardsOpened: CardData[];
@@ -56,14 +54,15 @@ export const counterSlice = createSlice({
       state.cards[idx].isOpened = false;
       state.cardsOpened.shift();
     },
-    play: state => {
-      state.cards.forEach(card => (card.isOpened = false));
+    play: (state, action: PayloadAction<string>) => {
+      state.cards.forEach(card => {
+        card.isOpened = false;
+        card.double = false;
+      });
       state.cards = shuffle(state.cards) as CardData[];
       state.gameInfo.gameStatus = GameStatus.PLAYING;
       state.cardsOpened = [];
-
-      timer.reset();
-      timer.start();
+      state.gameInfo.playerName = action.payload;
     },
     setTime: (state, action: PayloadAction<string>) => {
       state.gameInfo.playerTime = action.payload;

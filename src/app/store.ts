@@ -1,9 +1,11 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import fieldReducer from '../components/field/fieldSlice';
+import leaderboardReducer from '../components/leaderboard/leaderboardSlice';
 
 export const store = configureStore({
   reducer: {
     field: fieldReducer,
+    leaderboard: leaderboardReducer,
   },
 });
 

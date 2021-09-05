@@ -17,7 +17,7 @@ interface Props{
 
 const render = (props: Props)=>{
     const cards = props.cards.map((card) =>
-        <Card image={card.image} isOpened={card.isOpened} id={card.id} key={card.id} disabled={props.gameInfo.gameStatus === GameStatus.START} />)
+        <Card image={card.image} isOpened={card.isOpened} id={card.id} key={card.id} disabled={props.gameInfo.gameStatus !== GameStatus.PLAYING} />)
 
     return (
         <Row>

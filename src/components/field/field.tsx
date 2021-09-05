@@ -4,9 +4,14 @@ import { useEffect, useState } from 'react';
 
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { selectCards, selectGameInfo, play, setTime } from './fieldSlice';
-import { CardData} from '../../models/card';
+import {addPlayer } from '../leaderboard/leaderboardSlice'
+
+import { CardData } from '../../models/card';
+
 import Row from '../row';
 import Timer from '../timer';
+import Leaderboard from "../leaderboard/leaderboard";
+import { GameStatus } from "../../models/game-info";
 
 function splitToRows(cards: CardData[]){
     const rows = [];
@@ -30,12 +35,30 @@ const FieldStyled = styled.div`
     align-items: center;
     max-width: 100vw;
     max-height: 700px;
+    font-family: 'Segoe UI'
     
 `
 
 const InputContainerStyled = styled.div`
     display:flex;
     flex-direction: row;
+    margin-top: 10px;
+`
+
+const ButtonStyled = styled.button`
+    background-color: #33d651;
+    outline: none;
+    border: none;
+    width: 120px;
+    border-radius: 5px;
+    color: white;
+    -webkit-appearance: none;
+    height: 30px;
+    margin-left: 5px;
+    :hover{
+        background-color: #028002;
+        cursor: pointer;
+    }
 `
 
 const Field = ()=>{
@@ -49,7 +72,7 @@ const Field = ()=>{
     const [timer] = useTimer();
 
     const start = () => {
-        dispatch(play())
+        dispatch(play(playerName))
         timer.start();
     }
 
@@ -59,14 +82,23 @@ const Field = ()=>{
         dispatch(setTime(time))
     }, [time])
 
+    useEffect(() => {
+        if (gameInfo.gameStatus === GameStatus.END) {
+            dispatch(addPlayer({ playerName: gameInfo.playerName, playerTime: gameInfo.playerTime }))
+            timer.stop();
+        }
+    } , [gameInfo.gameStatus])
+
     return (
         <FieldStyled>
+            <Timer time={time} />
             {rows}
             <InputContainerStyled>
-                <input type="text" value={playerName} onChange={ (e)=> setPlayerName(e.target.value) }/>
-                <button onClick={()=> start()}>Play</button>
+                <input type="text" placeholder="Player name" value={playerName} onChange={ (e)=> setPlayerName(e.target.value) }/>
+                <ButtonStyled onClick={() => start()}>Play</ButtonStyled>
             </InputContainerStyled>
-            <Timer time={ time }/>
+            
+            <Leaderboard />
            
         </FieldStyled>
     )

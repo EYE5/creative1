@@ -2,21 +2,26 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
 
 import { CardData } from '../../models/card';
+import { GameInfo, GameStatus } from '../../models/game-info';
 import { cards } from '../../data';
 import { shuffle } from '../../utils/array-shuffle';
+import { Timer } from 'easytimer.js';
 
+export const timer = new Timer();
 export interface CounterState {
   cards: CardData[];
   cardsOpened: CardData[];
-  score: number;
-  isGameOver: boolean;
+  gameInfo: GameInfo;
 }
 
 const initialState: CounterState = {
   cards: shuffle(cards) as CardData[],
   cardsOpened: [],
-  score: 0,
-  isGameOver: false,
+  gameInfo: {
+    gameStatus: GameStatus.START,
+    playerName: '',
+    playerTime: '00:00:00',
+  },
 };
 
 export const counterSlice = createSlice({
@@ -34,7 +39,6 @@ export const counterSlice = createSlice({
       state.cardsOpened.push(state.cards[idx]);
 
       if (state.cardsOpened.length === 2 && state.cardsOpened[0].image === state.cardsOpened[1].image) {
-        state.score += 2;
         const sIdx = state.cards.findIndex(card => card.id === state.cardsOpened[0].id);
 
         state.cards[idx].double = true;
@@ -42,7 +46,7 @@ export const counterSlice = createSlice({
         state.cardsOpened = [];
       }
 
-      if (!state.cards.filter(card => !card.isOpened).length) state.isGameOver = true;
+      if (!state.cards.filter(card => !card.isOpened).length) state.gameInfo.gameStatus = GameStatus.END;
     },
     closeCard: (state, action: PayloadAction<number>) => {
       const idx = state.cards.findIndex(card => card.id === action.payload);
@@ -55,17 +59,21 @@ export const counterSlice = createSlice({
     play: state => {
       state.cards.forEach(card => (card.isOpened = false));
       state.cards = shuffle(state.cards) as CardData[];
-      state.score = 0;
+      state.gameInfo.gameStatus = GameStatus.PLAYING;
       state.cardsOpened = [];
-      state.isGameOver = false;
+
+      timer.reset();
+      timer.start();
+    },
+    setTime: (state, action: PayloadAction<string>) => {
+      state.gameInfo.playerTime = action.payload;
     },
   },
 });
 
-export const { openCard, closeCard, play } = counterSlice.actions;
+export const { openCard, closeCard, play, setTime } = counterSlice.actions;
 
 export const selectCards = (state: RootState) => state.field.cards;
-export const selectScore = (state: RootState) => state.field.score;
-export const selectGameState = (state: RootState) => state.field.isGameOver;
+export const selectGameInfo = (state: RootState) => state.field.gameInfo;
 
 export default counterSlice.reducer;

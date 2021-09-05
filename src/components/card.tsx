@@ -19,13 +19,19 @@ const CardStyled = styled.div`
     margin: 2px;
     transition: .5s;
 `
+interface Props{
+    image: string;
+    isOpened: boolean;
+    id: number;
+    disabled: boolean;
+};
 
-type Props = Omit<CardData, 'double'>;
-
-const Card = ({image, isOpened, id}: Props) => {  
+const Card = ({image, isOpened, id, disabled}: Props) => {  
     const dispatch = useAppDispatch();
 
-    const toggleCard = (id: number)=>{
+    const toggleCard = (id: number) => {
+        if (disabled) return;
+
         try{
             dispatch(openCard(id));
         } catch(error){

@@ -1,9 +1,12 @@
 import styled from "styled-components";
+import useTimer from 'easytimer-react-hook';
+import { useEffect, useState } from 'react';
 
-import { useAppSelector } from '../../app/hooks';
-import { selectCards, selectScore } from './fieldSlice';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { selectCards, selectGameInfo, play, setTime } from './fieldSlice';
 import { CardData} from '../../models/card';
 import Row from '../row';
+import Timer from '../timer';
 
 function splitToRows(cards: CardData[]){
     const rows = [];
@@ -30,17 +33,40 @@ const FieldStyled = styled.div`
     
 `
 
-
+const InputContainerStyled = styled.div`
+    display:flex;
+    flex-direction: row;
+`
 
 const Field = ()=>{
     const cards = useAppSelector(selectCards);
-    const score = useAppSelector(selectScore)
-    const rows = splitToRows(cards).map((row, idx)=><Row cards={row} key={idx}></Row>);
+    const gameInfo = useAppSelector(selectGameInfo)
+    const dispatch = useAppDispatch();
+    const [playerName, setPlayerName] = useState('');
+
+    const rows = splitToRows(cards).map((row, idx) => <Row cards={row} gameInfo={gameInfo} key={idx}></Row>);
+    
+    const [timer] = useTimer();
+
+    const start = () => {
+        dispatch(play())
+        timer.start();
+    }
+
+    const time = timer.getTimeValues().toString();
+
+    useEffect(() => {
+        dispatch(setTime(time))
+    }, [time])
 
     return (
         <FieldStyled>
             {rows}
-            <span>Score - {score} </span>
+            <InputContainerStyled>
+                <input type="text" value={playerName} onChange={ (e)=> setPlayerName(e.target.value) }/>
+                <button onClick={()=> start()}>Play</button>
+            </InputContainerStyled>
+            <Timer time={ time }/>
            
         </FieldStyled>
     )

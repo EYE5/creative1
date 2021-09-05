@@ -1,7 +1,8 @@
 import styled from "styled-components";
 
 import { useAppSelector, useAppDispatch } from '../app/hooks';
-import { play, selectGameState } from './field/fieldSlice';
+import { play, selectGameInfo } from './field/fieldSlice';
+import { GameStatus } from "../models/game-info";
 
 const AlertContainer = styled.div`
     position: absolute;
@@ -44,10 +45,12 @@ const ButtonStyled = styled.button`
 
 const Alert = () => {
     const dispatch = useAppDispatch()
-    const gameState = useAppSelector(selectGameState)
+    const gameState = useAppSelector(selectGameInfo)
+
+    const display = gameState.gameStatus === GameStatus.END;
 
     return (
-        <AlertContainer display = {gameState}>
+        <AlertContainer display={display}>
             <AlertStyled >
                 <h4>Вы открыли все карточки, попробовать еще раз?</h4>
                  <ButtonStyled onClick={()=>dispatch(play())}>Играть</ButtonStyled>
